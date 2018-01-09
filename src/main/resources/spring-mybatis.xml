@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans 
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mybatis="http://mybatis.org/schema/mybatis-spring"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd 
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0..xsd       
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd 
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+       
+	<context:component-scan base-package="cn.*.dao" />
+	<context:component-scan base-package="cn.*.service" />
+	<!-- <context:property-placeholder location="classpath:config/properties/*.properties" file-encoding="UTF-8" /> -->
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:config/properties/jdbc.properties</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="dataSource" class="org.logicalcobwebs.proxool.ProxoolDataSource">
+		<property name="alias" value="proxoolDataSource" />
+		<property name="driver" value="${connection.driver_class}" />
+		<property name="driverUrl" value="${connection.url}" />
+		<property name="user" value="${connection.username}" />
+		<property name="password" value="${connection.password}" />
+		<property name="maximumConnectionCount" value="${proxool.maximum.connection.count}" />
+		<property name="minimumConnectionCount" value="${proxool.minimum.connection.count}" />
+		<property name="maximumConnectionLifetime" value="${proxool.maximumConnectionLifetime}"/>
+		<!--proxool自动侦察各个连接状态的时间间隔(毫秒),侦察到空闲的连接就马上回收,超时的销毁 默认30秒-->
+ 		<property name="testBeforeUse" value="true"></property>
+ 		<property name="testAfterUse" value="true"></property>
+ 		<property name="houseKeepingSleepTime" value="${proxool.houseKeepingSleepTime}" />
+        <property name="houseKeepingTestSql" value="${proxool.houseKeepingTestSql}" />
+		<property name="statistics" value="${proxool.statistics}" />
+		<property name="simultaneousBuildThrottle" value="${proxool.simultaneous.build.throttle}" />
+	</bean>
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="mapperLocations" value="classpath:cn/**/**/*Mapper.xml" >
+<!-- 			<list>
+                <value>classpath:cn/third/mapping/*Mapper.xml</value>
+                <value>classpath:classpath:cn/third/sys/system/mapper/*Mapper.xml</value>
+            </list> -->
+		</property>
+		<!-- 加载sqlMapConfig配置文件 -->
+		<property name="configLocation" value="classpath:sqlMapConfig.xml"></property>
+	
+	</bean>
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="cn.*.dao" >
+		</property>
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
+	</bean>
+<!-- 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="cn.third.sys.system.dao" />
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
+	</bean> -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<aop:aspectj-autoproxy proxy-target-class="true" />
+</beans>  

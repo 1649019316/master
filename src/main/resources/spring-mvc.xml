@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:mybatis="http://mybatis.org/schema/mybatis-spring" xmlns:cache="http://www.springframework.org/schema/cache"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd  
+                        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+                        http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring.xsd 
+                        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
+	<mvc:annotation-driven></mvc:annotation-driven>
+	<context:component-scan base-package="cn.*.controller"></context:component-scan>
+	<bean id="mappingJacksonHttpMessageConverter"
+		class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
+		<property name="supportedMediaTypes">
+			<list>
+				<value>text/html;charset=UTF-8</value>
+			</list>
+		</property>
+	</bean>
+	<!-- <bean class="cn.znjr.sys.utils.SpringContextUtils" id="springContextUtils" /> -->
+	<bean
+		class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+		<property name="messageConverters">
+			<list>
+				<ref bean="mappingJacksonHttpMessageConverter" />
+			</list>
+		</property>
+	</bean>
+	<!-- 视图解析器 -->
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/jsp/"></property>
+		<property name="suffix" value=".jsp"></property>
+	</bean>
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="defaultEncoding" value="utf-8" />
+		<property name="maxUploadSize" value="10485760000" />
+		<property name="maxInMemorySize" value="40960" />
+	</bean>
+	   <!--  <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/*/*.action" />
+            <bean class="cn.znjr.sys.system.interceptor.UserSecurityInterceptor">
+                <property name="excludedUrls">
+                    <list>
+                        <value>/page/login.action</value>
+                        <value>/authorize/login.action</value>
+                        <value>/authorize/logout.action</value>
+                        
+                        <value>/customer/login.action</value>
+                        <value>/order/findOrders.action</value>
+                        <value>/order/orderConfrim.action</value>
+                        <value>/order/getOrderDetail.action</value>
+                        <value>/customer/getProducts.action</value>
+                        <value>/customer/addProduct.action</value>
+                        <value>/customer/addProducts.action</value>
+                        <value>/customer/modifyProduct.action</value>
+                        <value>/customer/deleteProducts.action</value>
+                        <value>/customer/insertSaleInfo.action</value>
+                        <value>/customer/getSalesByCondition.action</value>
+                        <value>/customer/getProductByBarcode.action</value>
+                        <value>/customer/getBrands.action</value>
+                        <value>/customer/getProductNames.action</value>
+                        <value>/customer/getProductSpecs.action</value>
+                        <value>/customer/getProductsByCondition.action</value>
+                        <value>/customer/getMyProductsByCondition.action</value>
+                        <value>/customer/modifyPassword.action</value>
+                        <value>/customer/getSaleClientCustomerByCondition.action</value>
+                        <value>/customer/getMyBrands.action</value>
+                        <value>/customer/getMyProductNames.action</value>
+                        <value>/customer/getMySpecs.action</value>
+                        <value>/inventory/getStocks.action</value>
+                        <value>/customer/getClientCustomerIntegralByCondition.action</value>
+                        <value>/customer/getMyAvailableProductsByCondition.action</value>
+                    </list>
+                </property>
+            </bean>
+        </mvc:interceptor>
+    </mvc:interceptors> -->
+
+</beans>
